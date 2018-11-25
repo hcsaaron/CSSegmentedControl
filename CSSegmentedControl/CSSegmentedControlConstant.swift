@@ -18,10 +18,10 @@ func cs_bundle(bundleName: String) -> Bundle? {
     }
 }
 
-func cs_image(imageName: String) -> UIImage? {
-    if let bundle = cs_bundle(bundleName: kBundleName) {
-        
-        let image = UIImage(contentsOfFile: bundle.bundlePath)
-
-    }
-}
+//func cs_image(imageName: String) -> UIImage? {
+//    if let bundle = cs_bundle(bundleName: kBundleName) {
+//        
+//        let image = UIImage(contentsOfFile: bundle.bundlePath)
+//
+//    }
+//}
