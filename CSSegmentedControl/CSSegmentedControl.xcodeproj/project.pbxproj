@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		93377C6021A5AC65009E43C3 /* CSSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93377C5F21A5AC65009E43C3 /* CSSegmentedControl.swift */; };
+		93377C6221A5BC8E009E43C3 /* CSSegmentedControl.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 93377C6121A5BC8E009E43C3 /* CSSegmentedControl.bundle */; };
+		93377C6521A5BCDC009E43C3 /* CSSegmentedControlConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93377C6421A5BCDC009E43C3 /* CSSegmentedControlConstant.swift */; };
 		93412AC521A465D0005428E8 /* CSSegmentedControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93412ABB21A465D0005428E8 /* CSSegmentedControl.framework */; };
 		93412ACA21A465D1005428E8 /* CSSegmentedControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93412AC921A465D1005428E8 /* CSSegmentedControlTests.swift */; };
 		93412ACC21A465D1005428E8 /* CSSegmentedControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 93412ABE21A465D0005428E8 /* CSSegmentedControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		93412AD621A47C21005428E8 /* CSSegmentedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93412AD521A47C21005428E8 /* CSSegmentedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,13 +26,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		93377C5F21A5AC65009E43C3 /* CSSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentedControl.swift; sourceTree = "<group>"; };
+		93377C6121A5BC8E009E43C3 /* CSSegmentedControl.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CSSegmentedControl.bundle; sourceTree = "<group>"; };
+		93377C6421A5BCDC009E43C3 /* CSSegmentedControlConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentedControlConstant.swift; sourceTree = "<group>"; };
 		93412ABB21A465D0005428E8 /* CSSegmentedControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CSSegmentedControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		93412ABE21A465D0005428E8 /* CSSegmentedControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSSegmentedControl.h; sourceTree = "<group>"; };
 		93412ABF21A465D0005428E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93412AC421A465D0005428E8 /* CSSegmentedControlTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CSSegmentedControlTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		93412AC921A465D1005428E8 /* CSSegmentedControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentedControlTests.swift; sourceTree = "<group>"; };
 		93412ACB21A465D1005428E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		93412AD521A47C21005428E8 /* CSSegmentedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +56,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		93377C6321A5BCA6009E43C3 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				93377C6121A5BC8E009E43C3 /* CSSegmentedControl.bundle */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		93412AB121A465D0005428E8 = {
 			isa = PBXGroup;
 			children = (
@@ -74,7 +86,9 @@
 			isa = PBXGroup;
 			children = (
 				93412ABE21A465D0005428E8 /* CSSegmentedControl.h */,
-				93412AD521A47C21005428E8 /* CSSegmentedView.swift */,
+				93377C5F21A5AC65009E43C3 /* CSSegmentedControl.swift */,
+				93377C6421A5BCDC009E43C3 /* CSSegmentedControlConstant.swift */,
+				93377C6321A5BCA6009E43C3 /* Resource */,
 				93412ABF21A465D0005428E8 /* Info.plist */,
 			);
 			path = CSSegmentedControl;
@@ -181,6 +195,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93377C6221A5BC8E009E43C3 /* CSSegmentedControl.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,7 +213,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93412AD621A47C21005428E8 /* CSSegmentedView.swift in Sources */,
+				93377C6521A5BCDC009E43C3 /* CSSegmentedControlConstant.swift in Sources */,
+				93377C6021A5AC65009E43C3 /* CSSegmentedControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
