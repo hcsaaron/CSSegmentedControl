@@ -14,23 +14,13 @@ public struct CSSegmentedConfigurator {
 
 public class CSSegmentedControl: UIControl {
     
-    // 用于保存各个状态的textAttributes的字典
-    private var textAttributesDic: [UInt: [NSAttributedString.Key : Any]] = [:]
-    
-    open func setTitleTextAttributes(_ attributes: [NSAttributedString.Key : Any]?, for state: UIControl.State) {
-        textAttributesDic[state.rawValue] = attributes
-    }
-    
-    open func titleTextAttributes(for state: UIControl.State) -> [NSAttributedString.Key : Any]? {
-        return textAttributesDic[state.rawValue]
-    }
-    
-    
-    
     enum SeparatorStyle {
         case none
         case `default`
     }
+    
+    // 用于保存各个状态的textAttributes的字典
+    private var textAttributesDic: [UInt: [NSAttributedString.Key : Any]] = [:]
     
     var itemWidth: Float = 0    // 为0时平均宽度，非0时按设定的宽度，超出可滑动
     
@@ -115,7 +105,7 @@ public class CSSegmentedControl: UIControl {
     }()
     
     // 显示的标题数组
-    public var titles: [String] = ["呵呵"] {
+    public var titles: [String] = [] {
         didSet {
             collectionView.reloadData()
         }
@@ -139,6 +129,14 @@ public class CSSegmentedControl: UIControl {
     
     private func setUp () {
         addSubview(collectionView)
+    }
+    
+    open func setTitleTextAttributes(_ attributes: [NSAttributedString.Key : Any]?, for state: UIControl.State) {
+        textAttributesDic[state.rawValue] = attributes
+    }
+    
+    open func titleTextAttributes(for state: UIControl.State) -> [NSAttributedString.Key : Any]? {
+        return textAttributesDic[state.rawValue]
     }
     
     public override func layoutSubviews() {
