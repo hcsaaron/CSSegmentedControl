@@ -12,6 +12,10 @@ public struct CSSegmentedConfigurator {
     
 }
 
+class CSSegment: UIView {
+    
+}
+
 public class CSSegmentedControl: UIControl {
     
     enum SeparatorStyle {
@@ -24,11 +28,17 @@ public class CSSegmentedControl: UIControl {
     
     var itemWidth: Float = 0    // 为0时平均宽度，非0时按设定的宽度，超出可滑动
     
-    var lineWidth: Float = 0    // 为0时宽度为item的宽度，非0时按设定的宽度
+    var indicatorWidth: Float = 0    // 为0时宽度为item的宽度，非0时按设定的宽度
+    
+    var indicatorColor: UIColor = .black
     
     var textColor: UIColor = .lightGray // 文字默认颜色
     
-    var textHighlightColor: UIColor = .black    // 文字高亮颜色
+    var selectedTextColor: UIColor = .black    // 文字高亮颜色
+    
+    var textFont: UIFont = UIFont.systemFont(ofSize: 15)
+    
+    var selectedTextFont: UIFont = UIFont.systemFont(ofSize: 15)
     
     var automaticItemWidth: Bool = false    // 是否根据文字自动调整item宽度，if true：item宽度将根据文字自动调整
     
