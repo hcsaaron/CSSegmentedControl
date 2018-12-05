@@ -11,11 +11,18 @@ import Foundation
 let kBundleName = "CSSegmentedControl"
 
 func CSSegmentedControlBundle(bundleName: String) -> Bundle? {
-    if let path = Bundle.main.path(forResource: bundleName, ofType: "bundle") {
+    if let path = Bundle(for: CSSegmentedControl.self).path(forResource: bundleName, ofType: "bundle") {
         return Bundle(path: path)
     } else {
         return nil
     }
+    
+    // 当作为framework时，下面方法获取的路径有误
+//    if let path = Bundle.main.path(forResource: bundleName, ofType: "bundle") {
+//        return Bundle(path: path)
+//    } else {
+//        return nil
+//    }
 }
 
 func CSSegmentedControlImage(imageName: String) -> UIImage? {

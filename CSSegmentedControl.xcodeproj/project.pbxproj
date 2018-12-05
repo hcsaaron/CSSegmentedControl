@@ -10,6 +10,8 @@
 		93377C6021A5AC65009E43C3 /* CSSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93377C5F21A5AC65009E43C3 /* CSSegmentedControl.swift */; };
 		93377C6221A5BC8E009E43C3 /* CSSegmentedControl.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 93377C6121A5BC8E009E43C3 /* CSSegmentedControl.bundle */; };
 		93377C6521A5BCDC009E43C3 /* CSSegmentedControlConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93377C6421A5BCDC009E43C3 /* CSSegmentedControlConstant.swift */; };
+		933D78D621B64ECA00F41A41 /* CSSegmentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933D78D521B64ECA00F41A41 /* CSSegmentItem.swift */; };
+		933D78D821B657E100F41A41 /* CSSegmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933D78D721B657E100F41A41 /* CSSegmentCell.swift */; };
 		93412AC521A465D0005428E8 /* CSSegmentedControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93412ABB21A465D0005428E8 /* CSSegmentedControl.framework */; };
 		93412ACA21A465D1005428E8 /* CSSegmentedControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93412AC921A465D1005428E8 /* CSSegmentedControlTests.swift */; };
 		93412ACC21A465D1005428E8 /* CSSegmentedControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 93412ABE21A465D0005428E8 /* CSSegmentedControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -29,6 +31,8 @@
 		93377C5F21A5AC65009E43C3 /* CSSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentedControl.swift; sourceTree = "<group>"; };
 		93377C6121A5BC8E009E43C3 /* CSSegmentedControl.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CSSegmentedControl.bundle; sourceTree = "<group>"; };
 		93377C6421A5BCDC009E43C3 /* CSSegmentedControlConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentedControlConstant.swift; sourceTree = "<group>"; };
+		933D78D521B64ECA00F41A41 /* CSSegmentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentItem.swift; sourceTree = "<group>"; };
+		933D78D721B657E100F41A41 /* CSSegmentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSegmentCell.swift; sourceTree = "<group>"; };
 		93412ABB21A465D0005428E8 /* CSSegmentedControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CSSegmentedControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		93412ABE21A465D0005428E8 /* CSSegmentedControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSSegmentedControl.h; sourceTree = "<group>"; };
 		93412ABF21A465D0005428E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +91,8 @@
 			children = (
 				93412ABE21A465D0005428E8 /* CSSegmentedControl.h */,
 				93377C5F21A5AC65009E43C3 /* CSSegmentedControl.swift */,
+				933D78D521B64ECA00F41A41 /* CSSegmentItem.swift */,
+				933D78D721B657E100F41A41 /* CSSegmentCell.swift */,
 				93377C6421A5BCDC009E43C3 /* CSSegmentedControlConstant.swift */,
 				93377C6321A5BCA6009E43C3 /* Resource */,
 				93412ABF21A465D0005428E8 /* Info.plist */,
@@ -213,8 +219,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				933D78D621B64ECA00F41A41 /* CSSegmentItem.swift in Sources */,
 				93377C6521A5BCDC009E43C3 /* CSSegmentedControlConstant.swift in Sources */,
 				93377C6021A5AC65009E43C3 /* CSSegmentedControl.swift in Sources */,
+				933D78D821B657E100F41A41 /* CSSegmentCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
