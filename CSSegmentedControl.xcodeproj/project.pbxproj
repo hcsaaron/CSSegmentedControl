@@ -91,8 +91,8 @@
 			children = (
 				93412ABE21A465D0005428E8 /* CSSegmentedControl.h */,
 				93377C5F21A5AC65009E43C3 /* CSSegmentedControl.swift */,
-				933D78D521B64ECA00F41A41 /* CSSegmentItem.swift */,
 				933D78D721B657E100F41A41 /* CSSegmentCell.swift */,
+				933D78D521B64ECA00F41A41 /* CSSegmentItem.swift */,
 				93377C6421A5BCDC009E43C3 /* CSSegmentedControlConstant.swift */,
 				93377C6321A5BCA6009E43C3 /* Resource */,
 				93412ABF21A465D0005428E8 /* Info.plist */,

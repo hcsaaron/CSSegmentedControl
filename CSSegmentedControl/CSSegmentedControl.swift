@@ -11,26 +11,25 @@ import Foundation
 private let kAnimatedDuration: TimeInterval = 0.25
 private let kFeatherWidth: CGFloat = 30
 
+protocol CSSegmentedControlDelegate {
+    
+}
+
+
+/// <#Description#>
 public class CSSegmentedControl: UIControl {
-    
-    public enum SeparatorStyle {
-        case none       // 无分割线
-        case `default`  // 默认分割线
-    }
-    
-    public enum FeatherStyle {
-        case none       // 无羽化效果
-        case `default`  // 默认羽化效果
-    }
     
     private var shadowImageView: UIImageView?   // 底部阴影ImageView
     
-    private var backgroundImageView: UIImageView?   // 背景ImageView
+    // 背景ImageView
+    lazy var backgroundImageView: UIImageView = {
+        let backgroundImageView = UIImageView(frame: .zero)
+        return backgroundImageView
+    }()
     
     private lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout.init()
         flowLayout.scrollDirection = .horizontal
-        flowLayout.estimatedItemSize = CGSize(width: 0, height: 44)
         return flowLayout
     }()
     
@@ -41,6 +40,7 @@ public class CSSegmentedControl: UIControl {
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(CSSegmentCell.self, forCellWithReuseIdentifier: CSSegmentCell.identifier)
+        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         return collectionView
     }()
     
@@ -52,14 +52,14 @@ public class CSSegmentedControl: UIControl {
     }()
     
     // 左边的羽化imageView
-    lazy var leftFeatherImageView: UIImageView = {
-        let imageView = UIImageView(image: CSSegmentedControlImage(imageName: "feather_left"))
+    private lazy var leftFeatherImageView: UIImageView = {
+        let imageView = UIImageView(image: leftFeatherImage)
         return imageView
     }()
     
     // 右边的羽化imageView
-    lazy var rightFeatherImageView: UIImageView = {
-        let imageView = UIImageView(image: CSSegmentedControlImage(imageName: "feather_right"))
+    private lazy var rightFeatherImageView: UIImageView = {
+        let imageView = UIImageView(image: rightFeatherImage)
         return imageView
     }()
     
@@ -80,6 +80,20 @@ public class CSSegmentedControl: UIControl {
                     layoutSubviews()
                 }
             }
+        }
+    }
+    
+    // 左边羽化图片
+    private var leftFeatherImage: UIImage? = CSSegmentedControlImage(imageName: "feather_left") {
+        didSet {
+            leftFeatherImageView.image = leftFeatherImage
+        }
+    }
+    
+    // 右边羽化图片
+    private var rightFeatherImage: UIImage? = CSSegmentedControlImage(imageName: "feather_right") {
+        didSet {
+            rightFeatherImageView.image = rightFeatherImage
         }
     }
     
@@ -130,11 +144,6 @@ public class CSSegmentedControl: UIControl {
     // 设置item宽度；为0时根据文字、图片自动调整item宽度
     public var itemWidth: CGFloat = 0 {
         didSet {
-            if itemWidth == 0 {
-                flowLayout.estimatedItemSize = CGSize(width: 0, height: 44)
-            } else {
-                flowLayout.estimatedItemSize = .zero
-            }
             collectionView.reloadData()
         }
     }
@@ -179,26 +188,25 @@ public class CSSegmentedControl: UIControl {
         }
     }
     
+    // 指示条动画类型
+    public var indicatorAnimationType: IndicatorAnimationType = .default
+    
+    // 选中后滚动位置
+    public var selectedItemScrollPosition: SelectedItemScrollPosition = .center
+    
     // 背景图片
     public var backgroundImage: UIImage? {
         didSet {
-            if backgroundImage != nil {
-                backgroundImageView = UIImageView(frame: .zero)
-                backgroundImageView?.image = backgroundImage
-                insertSubview(backgroundImageView!, at: 0)
-                layoutSubviews()
-            } else {
-                backgroundImageView?.removeFromSuperview()
-                backgroundImageView = nil
-                layoutSubviews()
-            }
+            backgroundImageView.image = backgroundImage
         }
     }
     
     // 选中的下标
     public var selectedSegmentIndex: Int = 0 {
         didSet {
-            layoutIndicator()
+            if selectedSegmentIndex != oldValue {
+                self.sendActions(for: .valueChanged)
+            }
         }
     }
     
@@ -208,6 +216,7 @@ public class CSSegmentedControl: UIControl {
             collectionView.reloadData()
             if items.count > 0 {
                 self.selectedSegmentIndex = 0
+                layoutIndicator()
             }
         }
     }
@@ -247,6 +256,7 @@ public class CSSegmentedControl: UIControl {
         separatorStyle = .none
         featherStyle = .none
 
+        addSubview(backgroundImageView)
         addSubview(collectionView)
         collectionView.addSubview(indicatorImageView)
         addSubview(leftFeatherImageView)
@@ -258,20 +268,59 @@ public class CSSegmentedControl: UIControl {
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentSize" {
             if collectionView.isDragging == false {
-                refreshFeather()
-                layoutIndicator()
+                if let newSize = change?[.newKey] as? CGSize, let oldSize = change?[.oldKey] as? CGSize {
+                    if newSize != oldSize {
+                        DispatchQueue.main.async {
+                            self.refreshFeather()
+                            self.layoutIndicator()
+                        }
+                    }
+                }
             }
         }
     }
     
     // 设置选中下标，动画效果
-    public func setSelectedSegmentIndex(index: Int, animated: Bool) {
-        if animated {
+    public func setSelectedSegmentIndexAndLayoutIndicator(index: Int) {
+        selectedSegmentIndex = index
+        switch indicatorAnimationType {
+        case .none:
+            self.layoutIndicator()
+        case .default:
             UIView.animate(withDuration: kAnimatedDuration) {
-                self.selectedSegmentIndex = index
+                self.layoutIndicator()
             }
-        } else {
-            selectedSegmentIndex = index
+        case .crawl:
+            if let toCell = self.collectionView.cellForItem(at: IndexPath(item: index, section: 0)) {
+                let fromFrame = indicatorImageView.frame
+                var toFrame = fromFrame
+                if indicatorWidth == 0 {
+                    toFrame.origin.x = toCell.frame.origin.x
+                    toFrame.size.width = toCell.frame.width
+                } else {
+                    toFrame.size.width = indicatorWidth
+                    toFrame.origin.x = toCell.frame.origin.x + (toCell.frame.width - indicatorWidth) / 2
+                }
+                
+                var tempFrame = fromFrame
+                if toFrame.origin.x > fromFrame.origin.x {
+                    tempFrame.origin.x = fromFrame.origin.x
+                    tempFrame.size.width = toFrame.origin.x + toFrame.size.width - fromFrame.origin.x
+                } else {
+                    tempFrame.origin.x = toFrame.origin.x
+                    tempFrame.size.width = fromFrame.origin.x + fromFrame.size.width - toFrame.origin.x
+                }
+                
+                UIView.animate(withDuration: kAnimatedDuration/2, animations: {
+                    self.indicatorImageView.frame = tempFrame
+                }) { (finished) in
+                    if finished {
+                        UIView.animate(withDuration: kAnimatedDuration/2, animations: {
+                            self.indicatorImageView.frame = toFrame
+                        })
+                    }
+                }
+            }
         }
     }
     
@@ -282,18 +331,18 @@ public class CSSegmentedControl: UIControl {
             shadowHeight = 0.5
             shadowImageView?.frame = CGRect(x: 0, y: frame.height - shadowHeight, width: frame.width, height: shadowHeight)
         }
-        if backgroundImageView != nil {
-            backgroundImageView?.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height - shadowHeight)
-        }
         
+        backgroundImageView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height - shadowHeight)
+
         collectionView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height - shadowHeight)
+        collectionView.reloadData()
         
         leftFeatherImageView.frame = CGRect(x: 0, y: 0, width: kFeatherWidth, height: frame.height)
         rightFeatherImageView.frame = CGRect(x: frame.width - kFeatherWidth, y: 0, width: kFeatherWidth, height: frame.height)
     }
     
     private func layoutIndicator() {
-        var indicatorFrame: CGRect = CGRect(x: 0, y: self.frame.height - indicatorHeight, width: 0, height: indicatorHeight)
+        var indicatorFrame: CGRect = CGRect(x: 0, y: collectionView.frame.height - indicatorHeight, width: 0, height: indicatorHeight)
         
         if let cell = collectionView.cellForItem(at: IndexPath(item: selectedSegmentIndex, section: 0)) {
             if indicatorWidth == 0 {
@@ -310,7 +359,7 @@ public class CSSegmentedControl: UIControl {
                     indicatorFrame.size.width = size.width
                 } else {
                     indicatorFrame.size.width = indicatorWidth
-                    indicatorFrame.origin.x = (size.width - indicatorWidth) / 2
+                    indicatorFrame.origin.x = leftInset + (size.width - indicatorWidth) / 2
                 }
             }
         }
@@ -364,13 +413,31 @@ extension CSSegmentedControl: UICollectionViewDataSource {
         cell.segmentItem = items[indexPath.item]
         return cell
     }
+    
+    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header", for: indexPath)
+        header.backgroundColor = .green
+        return header
+    }
+    
 }
 extension CSSegmentedControl: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        setSelectedSegmentIndex(index: indexPath.item, animated: true)
+        setSelectedSegmentIndexAndLayoutIndicator(index: indexPath.item)
         collectionView.reloadData()
+        
+        switch selectedItemScrollPosition {
+        case .center:
+            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        case .left:
+            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        case .right:
+            collectionView.scrollToItem(at: indexPath, at: .right, animated: true)
+        default:
+            break
+        }
     }
     
 }
@@ -422,11 +489,11 @@ extension CSSegmentedControl: UICollectionViewDelegateFlowLayout {
         return itemSpacing
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: 0, height: 0)
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize(width: 0, height: 0)
-    }
+//    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//        return .zero
+//    }
+//
+//    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+//        return .zero
+//    }
 }

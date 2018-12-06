@@ -15,6 +15,8 @@ class CSSegmentCell: UICollectionViewCell {
     lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [titleLabel])
         stackView.alignment = .center
+        stackView.layer.borderColor = UIColor.red.cgColor
+        stackView.layer.borderWidth = 1
         return stackView
     }()
     
@@ -40,6 +42,10 @@ class CSSegmentCell: UICollectionViewCell {
     
     private func setUp() {
         self.contentView.addSubview(stackView)
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        self.contentView.addConstraint(NSLayoutConstraint(item: stackView, attribute: .centerX, relatedBy: .equal, toItem: self.contentView, attribute: .centerX, multiplier: 1, constant: 0))
+        self.contentView.addConstraint(NSLayoutConstraint(item: stackView, attribute: .centerY, relatedBy: .equal, toItem: self.contentView, attribute: .centerY, multiplier: 1, constant: 0))
     }
     
     var segmentItem: CSSegmentItem? {
@@ -56,13 +62,16 @@ class CSSegmentCell: UICollectionViewCell {
                     case .imageOnRight:
                         stackView.addArrangedSubview(imageView)
                     }
+                } else {
+                    imageView.image = nil
                 }
             }
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        stackView.frame = self.bounds
-    }
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//        stackView.sizeToFit()
+//        stackView.center = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
+//    }
 }
