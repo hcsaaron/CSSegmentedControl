@@ -11,11 +11,22 @@ import Foundation
 private let kAnimatedDuration: TimeInterval = 0.25
 private let kFeatherWidth: CGFloat = 30
 
-protocol CSSegmentedControlDelegate {
-    
+extension CSSegmentedControl {
+    public override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        print("beginTracking")
+        return true
+    }
+    public override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        print("continueTracking")
+        return true
+    }
+    public override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        print("endTracking")
+    }
+    public override func cancelTracking(with event: UIEvent?) {
+        print("cancelTracking")
+    }
 }
-
-
 /// <#Description#>
 public class CSSegmentedControl: UIControl {
     
@@ -39,6 +50,7 @@ public class CSSegmentedControl: UIControl {
         collectionView.delegate = self
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.register(CSSegmentCell.self, forCellWithReuseIdentifier: CSSegmentCell.identifier)
         collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         return collectionView
@@ -99,20 +111,6 @@ public class CSSegmentedControl: UIControl {
     
     // MARK: ---------- Public ----------
     
-    // 指示条宽度，为0时宽度为item的宽度，非0时按设定的宽度
-    public var indicatorWidth: CGFloat = 0 {
-        didSet {
-            layoutIndicator()
-        }
-    }
-    
-    // 指示条高度
-    public var indicatorHeight: CGFloat = 2 {
-        didSet {
-            layoutIndicator()
-        }
-    }
-    
     // 指示条颜色
     public var indicatorColor: UIColor = .black {
         didSet {
@@ -141,6 +139,13 @@ public class CSSegmentedControl: UIControl {
         }
     }
     
+    // 选中item的显示比例
+    public var selectedItemScale: CGFloat = 1 {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     // 设置item宽度；为0时根据文字、图片自动调整item宽度
     public var itemWidth: CGFloat = 0 {
         didSet {
@@ -152,6 +157,20 @@ public class CSSegmentedControl: UIControl {
     public var itemSpacing: CGFloat = 10 {
         didSet {
             collectionView.reloadData()
+        }
+    }
+    
+    // 指示条宽度，为0时宽度为item的宽度，非0时按设定的宽度
+    public var indicatorWidth: CGFloat = 0 {
+        didSet {
+            layoutIndicator()
+        }
+    }
+    
+    // 指示条高度
+    public var indicatorHeight: CGFloat = 2 {
+        didSet {
+            layoutIndicator()
         }
     }
     
@@ -342,7 +361,9 @@ public class CSSegmentedControl: UIControl {
     }
     
     private func layoutIndicator() {
-        var indicatorFrame: CGRect = CGRect(x: 0, y: collectionView.frame.height - indicatorHeight, width: 0, height: indicatorHeight)
+        var indicatorFrame = indicatorImageView.frame
+        indicatorFrame.origin.y = collectionView.frame.height - indicatorHeight
+        indicatorFrame.size.height = indicatorHeight
         
         if let cell = collectionView.cellForItem(at: IndexPath(item: selectedSegmentIndex, section: 0)) {
             if indicatorWidth == 0 {
@@ -406,11 +427,18 @@ extension CSSegmentedControl: UICollectionViewDataSource {
         cell.titleLabel.font = textFont
         if indexPath.item == selectedSegmentIndex {
             cell.titleLabel.textColor = selectedTextColor
+            if cell.stackView.transform.isIdentity {
+                cell.stackView.transform = CGAffineTransform(scaleX: selectedItemScale, y: selectedItemScale)
+            }
         } else {
             cell.titleLabel.textColor = textColor
+            if !cell.stackView.transform.isIdentity {
+                cell.stackView.transform = CGAffineTransform.identity
+            }
         }
         
         cell.segmentItem = items[indexPath.item]
+        
         return cell
     }
     
@@ -419,7 +447,6 @@ extension CSSegmentedControl: UICollectionViewDataSource {
         header.backgroundColor = .green
         return header
     }
-    
 }
 extension CSSegmentedControl: UICollectionViewDelegate {
     

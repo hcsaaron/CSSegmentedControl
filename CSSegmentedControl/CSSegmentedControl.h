@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-//! Project version number for CSSegmentedControl.
-FOUNDATION_EXPORT double CSSegmentedControlVersionNumber;
-
-//! Project version string for CSSegmentedControl.
-FOUNDATION_EXPORT const unsigned char CSSegmentedControlVersionString[];
-
-// In this header, you should import all the public headers of your framework using statements like #import <CSSegmentedControl/PublicHeader.h>
+////! Project version number for CSSegmentedControl.
+//FOUNDATION_EXPORT double CSSegmentedControlVersionNumber;
+//
+////! Project version string for CSSegmentedControl.
+//FOUNDATION_EXPORT const unsigned char CSSegmentedControlVersionString[];
+//
+//// In this header, you should import all the public headers of your framework using statements like #import <CSSegmentedControl/PublicHeader.h>
 
 

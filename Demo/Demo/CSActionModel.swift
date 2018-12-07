@@ -14,12 +14,13 @@ enum CSAction: String {
     case indicatorAnimationType
     case selectedItemScrollPosition
     case backgroundImage
-    case indicatorWidth
-    case indicatorHeight
     case indicatorColor
     case textFont
     case textColor
     case selectedTextColor
+    case indicatorWidth
+    case indicatorHeight
+    case selectedItemScale
     case itemWidth
     case itemSpacing
     case leftInset

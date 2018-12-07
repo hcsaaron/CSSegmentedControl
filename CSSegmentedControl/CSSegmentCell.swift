@@ -15,8 +15,6 @@ class CSSegmentCell: UICollectionViewCell {
     lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [titleLabel])
         stackView.alignment = .center
-        stackView.layer.borderColor = UIColor.red.cgColor
-        stackView.layer.borderWidth = 1
         return stackView
     }()
     
