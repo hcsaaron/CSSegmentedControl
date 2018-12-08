@@ -8,6 +8,7 @@ Pod::Spec.new do |s|
   s.author       = { "Aaron" => "hcsaaron@163.com" }
   s.source       = { :git => "https://github.com/hcsaaron/CSSegmentedControl.git", :tag => s.version.to_s }
   s.description  = "CSSegmentedControl is a clean and easy-to-use custom SegmentedControl meant to show any item"
+  s.swift_version = "4.2"
   s.source_files = "CSSegmentedControl/**/*.{h,swift}"
   s.resource     = 'CSSegmentedControl/Resource/CSSegmentedControl.bundle'
   s.requires_arc = true
