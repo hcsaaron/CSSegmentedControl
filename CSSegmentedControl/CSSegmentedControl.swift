@@ -438,15 +438,17 @@ extension CSSegmentedControl: UICollectionViewDelegate {
         setSelectedSegmentIndexAndLayoutIndicator(index: indexPath.item)
         collectionView.reloadData()
         
-        switch selectedItemScrollPosition {
-        case .center:
-            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        case .left:
-            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
-        case .right:
-            collectionView.scrollToItem(at: indexPath, at: .right, animated: true)
-        default:
-            break
+        DispatchQueue.main.async {
+            switch self.selectedItemScrollPosition {
+            case .center:
+                collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            case .left:
+                collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+            case .right:
+                collectionView.scrollToItem(at: indexPath, at: .right, animated: true)
+            default:
+                break
+            }
         }
     }
     

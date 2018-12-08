@@ -121,7 +121,7 @@ class ViewController: UIViewController {
         case .selectedItemScrollPosition:
             return ["none", "center", "left", "right"]
         case .backgroundImage:
-            return ["无背景图", "有背景图"]
+            return ["no bg", "has bg"]
         case .indicatorColor:
             return ["black", "red"]
         case .textFont:
