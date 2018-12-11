@@ -9,22 +9,22 @@
 import UIKit
 
 enum CSAction: String {
-    case separatorStyle
-    case featherStyle
+    case leftInset
+    case rightInset
+    case itemWidth
+    case itemSpacing
+    case selectedItemScale
+    case indicatorWidth
+    case indicatorHeight
     case indicatorAnimationType
     case selectedItemScrollPosition
+    case separatorStyle
+    case featherStyle
     case backgroundImage
     case indicatorColor
     case textFont
     case textColor
     case selectedTextColor
-    case indicatorWidth
-    case indicatorHeight
-    case selectedItemScale
-    case itemWidth
-    case itemSpacing
-    case leftInset
-    case rightInset
 }
 
 class CSActionModel: NSObject {

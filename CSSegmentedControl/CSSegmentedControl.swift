@@ -11,8 +11,15 @@ import Foundation
 private let kAnimatedDuration: TimeInterval = 0.25
 private let kFeatherWidth: CGFloat = 30
 
+extension CSSegmentedControl {
+    // item 等宽平均布局
+    public static let equalDimension: CGFloat = 0
+    // item 自动调整尺寸
+    public static let automaticDimension: CGFloat = -1
+}
+
 public class CSSegmentedControl: UIControl {
-    
+
     private var shadowImageView: UIImageView?   // 底部阴影ImageView
     
     // 背景ImageView
@@ -129,10 +136,11 @@ public class CSSegmentedControl: UIControl {
         }
     }
     
-    // 设置item宽度；为0时根据文字、图片自动调整item宽度
-    public var itemWidth: CGFloat = 0 {
+    // 设置item宽度
+    public var itemWidth: CGFloat = CSSegmentedControl.automaticDimension {
         didSet {
             collectionView.reloadData()
+            layoutIndicator()
         }
     }
     
@@ -140,11 +148,12 @@ public class CSSegmentedControl: UIControl {
     public var itemSpacing: CGFloat = 10 {
         didSet {
             collectionView.reloadData()
+            layoutIndicator()
         }
     }
     
     // 指示条宽度，为0时宽度为item的宽度，非0时按设定的宽度
-    public var indicatorWidth: CGFloat = 0 {
+    public var indicatorWidth: CGFloat = CSSegmentedControl.automaticDimension {
         didSet {
             layoutIndicator()
         }
@@ -161,6 +170,7 @@ public class CSSegmentedControl: UIControl {
     public var leftInset: CGFloat = 0 {
         didSet {
             collectionView.reloadData()
+            layoutIndicator()
         }
     }
     
@@ -168,6 +178,7 @@ public class CSSegmentedControl: UIControl {
     public var rightInset: CGFloat = 0 {
         didSet {
             collectionView.reloadData()
+            layoutIndicator()
         }
     }
 
@@ -267,6 +278,10 @@ public class CSSegmentedControl: UIControl {
         collectionView.addObserver(self, forKeyPath: "contentSize", options: [.new, .old], context: nil)
     }
     
+    deinit {
+        collectionView.removeObserver(self, forKeyPath: "contentSize")
+    }
+    
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentSize" {
             if collectionView.isDragging == false {
@@ -296,7 +311,7 @@ public class CSSegmentedControl: UIControl {
             if let toCell = self.collectionView.cellForItem(at: IndexPath(item: index, section: 0)) {
                 let fromFrame = indicatorImageView.frame
                 var toFrame = fromFrame
-                if indicatorWidth == 0 {
+                if indicatorWidth == CSSegmentedControl.automaticDimension {
                     toFrame.origin.x = toCell.frame.origin.x
                     toFrame.size.width = toCell.frame.width
                 } else {
@@ -349,7 +364,7 @@ public class CSSegmentedControl: UIControl {
         indicatorFrame.size.height = indicatorHeight
         
         if let cell = collectionView.cellForItem(at: IndexPath(item: selectedSegmentIndex, section: 0)) {
-            if indicatorWidth == 0 {
+            if indicatorWidth == CSSegmentedControl.automaticDimension {
                 indicatorFrame.origin.x = cell.frame.origin.x
                 indicatorFrame.size.width = cell.frame.width
             } else {
@@ -357,14 +372,22 @@ public class CSSegmentedControl: UIControl {
                 indicatorFrame.origin.x = cell.frame.origin.x + (cell.frame.width - indicatorWidth) / 2
             }
         } else {
-            if selectedSegmentIndex == 0 && selectedSegmentIndex < items.count {
-                let size = sizeForItemAt(indexPath: IndexPath(item: selectedSegmentIndex, section: 0))
-                if indicatorWidth == 0 {
-                    indicatorFrame.size.width = size.width
-                } else {
-                    indicatorFrame.size.width = indicatorWidth
-                    indicatorFrame.origin.x = leftInset + (size.width - indicatorWidth) / 2
+            var left: CGFloat = leftInset
+            var itemWidth: CGFloat = 0
+            for i in 0..<items.count {
+                let size = sizeForItemAt(indexPath: IndexPath(item: i, section: 0))
+                if selectedSegmentIndex == i {
+                    itemWidth = size.width
+                    break;
                 }
+                left = left + size.width + itemSpacing
+            }
+            if indicatorWidth == CSSegmentedControl.automaticDimension {
+                indicatorFrame.origin.x = left
+                indicatorFrame.size.width = itemWidth
+            } else {
+                indicatorFrame.origin.x = leftInset + (itemWidth - indicatorWidth) / 2
+                indicatorFrame.size.width = indicatorWidth
             }
         }
         indicatorImageView.frame = indicatorFrame
@@ -456,8 +479,8 @@ extension CSSegmentedControl: UICollectionViewDelegate {
 
 extension CSSegmentedControl: UICollectionViewDelegateFlowLayout {
     
-    // 计算item的size
-    private func sizeForItemAt(indexPath: IndexPath) -> CGSize {
+    // 计算item的fit size
+    private func fitSizeForItemAt(indexPath: IndexPath) -> CGSize {
         let item = items[indexPath.item]
         
         let text: NSString = item.title as NSString? ?? ""
@@ -479,12 +502,22 @@ extension CSSegmentedControl: UICollectionViewDelegateFlowLayout {
         return rect.size
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if itemWidth > 0 {
+    // item需要的size
+    private func sizeForItemAt(indexPath: IndexPath) -> CGSize {
+        if itemWidth == CSSegmentedControl.automaticDimension {
+            return fitSizeForItemAt(indexPath: indexPath)
+        } else if itemWidth > 0 {
             return CGSize(width: itemWidth, height: collectionView.frame.height)
         } else {
-            return sizeForItemAt(indexPath: indexPath)
+            // itemWidth == CSSegmentedControl.equalDimension || itemWidth < 0
+            let allItemSpacing: CGFloat = itemSpacing * CGFloat(items.count - 1)
+            let equalItemWidth: CGFloat = (collectionView.frame.width - leftInset - rightInset - allItemSpacing) / CGFloat(items.count)
+            return CGSize(width: equalItemWidth, height: collectionView.frame.height)
         }
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return sizeForItemAt(indexPath: indexPath)
     }
     
     // MARK: collectionView横向滚动时，item的height与insetForSection的top、bottom之和应与collectionView的height一致，否则运行会报错（Make a symbolic breakpoint at UICollectionViewFlowLayoutBreakForInvalidSizes to catch this in the debugger.）
